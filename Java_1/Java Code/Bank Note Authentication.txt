@@ -1,0 +1,59 @@
+import pandas as pd 
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier as rfc
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix 
+from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC as svc
+from sklearn.linear_model import LogisticRegression
+
+import seaborn as sns
+
+#loading dataset
+banknote_datadset = pd.read_csv('https://drive.google.com/uc?export=download&id=1N8bd6fk5s45HMAbGY_PsAD8RLNfOb4Ei')
+
+#data analysis
+banknote_datadset.head()
+banknote_datadset.describe()
+sns.pairplot(banknote_datadset)
+
+#data preprocessing
+dataset_features = banknote_datadset.iloc[:, 0:4].values 
+dataset_labels = banknote_datadset.iloc[:, 4].values 
+
+#train and test
+train_features, test_features, train_labels, test_labels = train_test_split(dataset_features, dataset_labels, test_size=0.2, random_state=21)
+
+#random forest algorithm
+print("Random forest algorithm:\n" )
+rfc_object = rfc(n_estimators=200, random_state=0) 
+rfc_object.fit(train_features, train_labels) 
+predicted_labels = rfc_object.predict(test_features)
+print(classification_report(test_labels, predicted_labels)) 
+print(confusion_matrix(test_labels, predicted_labels)) 
+print(accuracy_score(test_labels, predicted_labels))
+
+#support vector machine
+print("\nsupport vector machine: \n")
+svc_object = svc(kernel='poly', degree=8) 
+svc_object.fit(train_features, train_labels)
+predicted_labels = svc_object.predict(test_features)
+print(classification_report(test_labels, predicted_labels)) 
+print(confusion_matrix(test_labels, predicted_labels)) 
+print(accuracy_score(test_labels, predicted_labels))
+
+#logistic regression
+print("\n\n\n Logistic Regression : \n")
+lr_object = LogisticRegression() 
+lr_object.fit(train_features, train_labels)
+predicted_labels = lr_object.predict(test_features)  
+print("\n\n The following script evaluates the linear regression model:\n")
+print(classification_report(test_labels, predicted_labels)) 
+print(confusion_matrix(test_labels, predicted_labels)) 
+print(accuracy_score(test_labels, predicted_labels))
+plt.plot(banknote_datadset)
+plt.show()
+
